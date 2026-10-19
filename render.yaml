@@ -1,0 +1,32 @@
+# Import this repository using Render -> New -> Blueprint.
+# Uses an existing PostgreSQL database: no database is purchased by this file.
+services:
+  - type: web
+    name: campuslink-api
+    runtime: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    buildFilter:
+      paths:
+        - backend/**
+        - render.yaml
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: postgres
+      - key: DB_URL
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: AI_PROVIDER
+        value: openai
+      - key: AI_TIMEOUT
+        value: 60s
+      - key: CV_RETENTION_DAYS
+        value: "30"
+# Add optional AI_MODEL and AI_API_KEY in the backend Environment panel.
+# AI stays explicitly unavailable until both have been configured.

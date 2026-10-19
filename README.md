@@ -94,3 +94,7 @@ npm.cmd test
 Tests use synthetic CVs and explicitly mocked AI/network responses; they do not send personal CV data or make paid AI calls. Backend tests cover PDF/DOCX validation, malformed/encrypted files and ZIP abuse, structured response errors/timeouts, exact evidence, matching, auth/ownership, quota concurrency, entitlement, consent, deletion/expiry and H2 file persistence. Browser tests cover upload, privacy preview, consent, result rendering, errors, unconfigured state, languages, mobile layout and existing navigation.
 
 See [verification results](docs/VERIFICATION.md) for actual command outcomes and remaining limits. This is an incremental implementation, **not a production-readiness claim**. The original app still has demo content, browser-stored auth tokens, no email verification/Google OAuth and no real-time chat. Document parsers should be isolated and resource-limited before public hosting. AI semantic faithfulness, complete PII removal and prompt-injection immunity cannot be guaranteed by schema/quote validation.
+
+## Docker / Render / Vercel
+
+Deployment files are included. See [deployment guide](docs/DEPLOYMENT.md) for local Docker Compose, Render backend/PostgreSQL and Vercel frontend. Before Vercel deployment, configure the actual backend URL with `node scripts/configure-deploy.mjs https://YOUR-BACKEND.onrender.com` from frontend/. No cloud service has been created by adding these files.
