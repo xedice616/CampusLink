@@ -1,0 +1,13 @@
+# Repository audit and implementation decisions
+
+Audited before implementation: the existing four Java source files, Maven configuration, H2/Postgres settings and schema, launch scripts, Vite entry/configuration, frontend main/data/style files, existing chat-sticker module and documentation. No unrelated backend routes or user data were deleted.
+
+The backend was a Java 21-target Spring Boot 3.3.4 application using JdbcTemplate, file H2 in PostgreSQL compatibility mode, an optional PostgreSQL profile and additive schema startup. BCrypt passwords and SHA-256-hashed opaque expiring session tokens already existed. Career routes reuse those session records, with a dedicated filter to authenticate before multipart parsing. The frontend uses vanilla JavaScript template components and Vite's existing API proxy.
+
+The prior POST /api/v1/career/analyze accepted `{skills,role}`, selected one of three hard-coded keyword lists and stored a percentage in `analyses`. It never extracted CV contents or called an AI model. Existing users had neither a role field nor a subscription/entitlement model; the visual Pro button had no backend authority. Existing file upload was PDF-only visual selection and did not upload the CV. These paths were replaced, and the old JSON request receives a documented migration error rather than a misleading AI result.
+
+Implementation sequence: add safe extraction and input minimization; define typed AI records and closed schema; integrate a fixed-endpoint server-side Responses adapter with explicit availability/errors; validate excerpts and calculate transparent weights; add atomic account leases/entitlements and optional owner-scoped result retention; connect the existing frontend; add parsing, API, quota, provider and browser tests; verify builds and the actual HTTP/browser boundary.
+
+Dependencies: Apache PDFBox 3.0.7 and Apache POI 5.5.1 for text extraction (Apache License 2.0); Java's existing HttpClient and Jackson/Bean Validation for provider communication/validation. No AI SDK, Node backend, payment platform, external storage or new authentication stack was introduced. Playwright is a development-only frontend test dependency. The original dependency stack was retained; a full dependency/security audit is still required before hosting.
+
+Provider selection: only OpenAI Responses is currently supported, using configurable server-side model/key/timeout and strict structured JSON. Unsupported provider values fail closed. No raw file, public CV URL, file tool, browsing tool, paid smoke call or automatic retry is used. AI availability is optional for the rest of CampusLink. See [API contract](CAREER_API.md) and [verification results](VERIFICATION.md).
